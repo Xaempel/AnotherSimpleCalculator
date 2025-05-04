@@ -36,9 +36,22 @@ namespace Ui {
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
+   Q_OBJECT
+
    public:
    explicit MainWindow(QWidget* parent = nullptr);
 
+   signals:
+   void addNumbertoOperation(int number);
+   void aritmeticalOperationWasSelected(QString operation);
+   void sumNumbers();
+
    private:
    Ui::MainWindow* ui {nullptr};
+
+   bool operationWasSelected {false};
+   
+   QString firstNumber {"0"};
+   QString secondNumber {"0"};
+   QString mathOperation {""};
 };
