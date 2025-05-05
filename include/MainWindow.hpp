@@ -50,6 +50,7 @@ class MainWindow : public QMainWindow {
    void addNumbertoOperation(int numbertoAdd);
    void aritmeticalOperationSelected(QString operation);
    void clearOperations();
+   void undoOperation();
 
    private:
    Ui::MainWindow* ui {nullptr};

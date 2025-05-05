@@ -3,6 +3,7 @@
 #include "frontend/ui_MainWindow.h"
 
 #include <QMessageBox>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -28,6 +29,7 @@ MainWindow::MainWindow(QWidget* parent)
    
    QObject::connect(ui->equalOperation,&QPushButton::clicked,this,&MainWindow::sumNumbers);
    QObject::connect(ui->clearButton,&QPushButton::clicked,this,&MainWindow::clearOperations);
+   QObject::connect(ui->undoActionButton,&QPushButton::clicked,this,&MainWindow::undoOperation);
 
    QObject::connect(this,&MainWindow::actionAritmeticalOperationSelected,this,&MainWindow::aritmeticalOperationSelected);
 
@@ -100,4 +102,31 @@ void MainWindow::clearOperations(){
     firstNumber = "0";
     secondNumber = "0";
     ui->operationMonit->setText("");
+}
+
+void MainWindow::undoOperation(){
+    if(firstNumber.size() > 0 ){
+        if(operationWasSelected == false){
+            int lastIndex = firstNumber.size() - 1; 
+            QString newNumber = firstNumber; 
+            newNumber.remove(lastIndex, 1);
+            ui->operationMonit->setText(newNumber);
+            firstNumber = newNumber; 
+        }
+        else{
+            if(secondNumber.size() > 0){
+                int lastIndex = secondNumber.size() - 1; 
+                QString newNumber = secondNumber; 
+                newNumber.remove(lastIndex, 1);
+                QString stringToset = firstNumber + mathOperation + newNumber;
+                ui->operationMonit->setText(stringToset);
+                secondNumber = newNumber;
+            } 
+            else{
+                mathOperation = "";
+                ui->operationMonit->setText(firstNumber);
+                operationWasSelected = false;
+            }
+        }
+    }
 }
