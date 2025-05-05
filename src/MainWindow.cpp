@@ -2,7 +2,7 @@
 
 #include "frontend/ui_MainWindow.h"
 
-#include <QDebug>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -10,63 +10,94 @@ MainWindow::MainWindow(QWidget* parent)
 {
    ui->setupUi(this);
 
-   QObject::connect(ui->num_1,&QPushButton::clicked,this,[this](){emit addNumbertoOperation(1);});
-   QObject::connect(ui->num_2,&QPushButton::clicked,this,[this](){emit addNumbertoOperation(2);});
-   QObject::connect(ui->num_3,&QPushButton::clicked,this,[this](){emit addNumbertoOperation(3);});
-   QObject::connect(ui->num_4,&QPushButton::clicked,this,[this](){emit addNumbertoOperation(4);});
-   QObject::connect(ui->num_5,&QPushButton::clicked,this,[this](){emit addNumbertoOperation(5);});
-   QObject::connect(ui->num_6,&QPushButton::clicked,this,[this](){emit addNumbertoOperation(6);});
-   QObject::connect(ui->num_7,&QPushButton::clicked,this,[this](){emit addNumbertoOperation(7);});
-   QObject::connect(ui->num_8,&QPushButton::clicked,this,[this](){emit addNumbertoOperation(8);});
-   QObject::connect(ui->num_9,&QPushButton::clicked,this,[this](){emit addNumbertoOperation(9);});
+   QObject::connect(ui->num_1,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(1);});
+   QObject::connect(ui->num_2,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(2);});
+   QObject::connect(ui->num_3,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(3);});
+   QObject::connect(ui->num_4,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(4);});
+   QObject::connect(ui->num_5,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(5);});
+   QObject::connect(ui->num_6,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(6);});
+   QObject::connect(ui->num_7,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(7);});
+   QObject::connect(ui->num_8,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(8);});
+   QObject::connect(ui->num_9,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(9);});
+   QObject::connect(ui->num_0,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(0);});
 
-   QObject::connect(ui->addOperation,&QPushButton::clicked,this,[this](){emit aritmeticalOperationWasSelected("+");});
-   QObject::connect(ui->minusOperation,&QPushButton::clicked,this,[this](){emit aritmeticalOperationWasSelected("-");});
-   QObject::connect(ui->equalOperation,&QPushButton::clicked,this,[this](){emit sumNumbers();});
+   QObject::connect(ui->addOperation,&QPushButton::clicked,this,[this](){emit actionAritmeticalOperationSelected("+");});
+   QObject::connect(ui->minusOperation,&QPushButton::clicked,this,[this](){emit actionAritmeticalOperationSelected("-");});
+   QObject::connect(ui->divisionOperation,&QPushButton::clicked,this,[this](){emit actionAritmeticalOperationSelected("/");});
+   QObject::connect(ui->multiOperation,&QPushButton::clicked,this,[this](){emit actionAritmeticalOperationSelected("*");});
+   
+   QObject::connect(ui->equalOperation,&QPushButton::clicked,this,&MainWindow::sumNumbers);
+   QObject::connect(ui->clearButton,&QPushButton::clicked,this,&MainWindow::clearOperations);
 
-   QObject::connect(this,&MainWindow::aritmeticalOperationWasSelected,this,[this](QString operation){
-        if(operationWasSelected == false){
-            QString currentOperation = ui->operationMonit->text();
-            currentOperation += operation;
-            ui->operationMonit->setText(currentOperation);
-            operationWasSelected = true;
-            mathOperation = operation;
-        } 
+   QObject::connect(this,&MainWindow::actionAritmeticalOperationSelected,this,&MainWindow::aritmeticalOperationSelected);
+
+   QObject:connect(this,&MainWindow::actionAddNumbertoOperation,this,&MainWindow::addNumbertoOperation);
+}
+
+void MainWindow::sumNumbers(){
+    operationWasSelected = false;
+
+    float firstNum = firstNumber.toInt();
+    float secondNum = secondNumber.toInt();
+    float sumofNumbers = 0;
+
+    if(mathOperation == "+"){
+        sumofNumbers = firstNum + secondNum;
+    }
+    else if(mathOperation == "-"){
+        sumofNumbers = firstNum - secondNum;
+    }
+    else if(mathOperation == "*"){
+        sumofNumbers = firstNum * secondNum;
+    }
+    else if(mathOperation == "/"){
+        if(secondNum == 0){
+            QMessageBox::warning(nullptr,"Divide Error","Bro! Why you're wanna create a black hole in universe");
+        }
         else{
-            return;
+            sumofNumbers = firstNum / secondNum;
         }
-    });
+    }
+    ui->operationMonit->setText(QString::number(sumofNumbers) );
+    
+    firstNumber = QString::number(sumofNumbers);
+    secondNumber = "0";
+}
 
-    QObject::connect(this,&MainWindow::sumNumbers,this,[this](){
-        int firstNum = firstNumber.toInt();
-        int secondNum = secondNumber.toInt();
-        int sumofNumber = 0;
-        
-        if(mathOperation == "+"){
-            sumofNumber = firstNum + secondNum;
-        }
-        if(mathOperation == "-"){
-            sumofNumber = firstNum - secondNum;
-        }
-        ui->operationMonit->setText(QString::number(sumofNumber) );
-    });
+void MainWindow::addNumbertoOperation(int numbertoAdd){
+    QString currentOperation = ui->operationMonit->text();
+    currentOperation += QString::number(numbertoAdd);
+    ui->operationMonit->setText(currentOperation);
 
-   QObject:connect(this,&MainWindow::addNumbertoOperation,this,[this](int numbertoAdd){
+    if(operationWasSelected == false){
+        if(firstNumber == "0"){
+            firstNumber = "";
+        }
+        firstNumber += QString::number(numbertoAdd); 
+    }
+    else{
+        if(secondNumber == "0"){
+            secondNumber = "";
+        }
+        secondNumber += QString::number(numbertoAdd);
+    }
+}
+
+void MainWindow::aritmeticalOperationSelected(QString operation){
+    if(operationWasSelected == false){
         QString currentOperation = ui->operationMonit->text();
-        currentOperation += QString::number(numbertoAdd);
+        currentOperation += operation;
         ui->operationMonit->setText(currentOperation);
+        operationWasSelected = true;
+        mathOperation = operation;
+    } 
+    else{
+        return;
+    }
+}
 
-        if(operationWasSelected == false){
-            if(firstNumber == "0"){
-                firstNumber = "";
-            }
-            firstNumber += QString::number(numbertoAdd); 
-        }
-        else{
-            if(secondNumber == "0"){
-                secondNumber = "";
-            }
-            secondNumber += QString::number(numbertoAdd);
-        }
-    });
+void MainWindow::clearOperations(){
+    firstNumber = "0";
+    secondNumber = "0";
+    ui->operationMonit->setText("");
 }

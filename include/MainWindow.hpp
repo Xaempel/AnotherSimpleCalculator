@@ -42,9 +42,14 @@ class MainWindow : public QMainWindow {
    explicit MainWindow(QWidget* parent = nullptr);
 
    signals:
-   void addNumbertoOperation(int number);
-   void aritmeticalOperationWasSelected(QString operation);
+   void actionAddNumbertoOperation(int number);
+   void actionAritmeticalOperationSelected(QString operation);
+
+   private slots:
    void sumNumbers();
+   void addNumbertoOperation(int numbertoAdd);
+   void aritmeticalOperationSelected(QString operation);
+   void clearOperations();
 
    private:
    Ui::MainWindow* ui {nullptr};
@@ -53,5 +58,5 @@ class MainWindow : public QMainWindow {
    
    QString firstNumber {"0"};
    QString secondNumber {"0"};
-   QString mathOperation {""};
+   QString mathOperation {};
 };
