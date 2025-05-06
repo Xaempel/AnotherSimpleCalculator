@@ -18,6 +18,7 @@ Here you write about your project system requirements
 - Ninja 1.12.1 or later
 - CMake Version 3.20 or later
 - Git 2.49.0 or later
+- SQLite3  3.49.1 or later
 
 [Return](#readme-index)
 
@@ -38,6 +39,7 @@ This project uses the following tools and dependencies:
 - [Git](https://git-scm.com/): Git is a free and open source distributed version control.
   [Git Source](https://github.com/git/git)
 
+- [Sqlite3](https://sqlite.org/): SQLite is a C-language library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine. 
 ## Authors
 
 - [Xaempel]

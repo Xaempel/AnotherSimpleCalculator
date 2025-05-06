@@ -25,42 +25,18 @@
 **  https://www.qt.io/.                                                       **
 **                                                                            **
 *******************************************************************************/
-
-#include <QMainWindow>
-#include "models/DatabaseModel.hpp"
-#include "../include/MathOperationsRecordsWidget.hpp"
+#include <QFrame>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-   class MainWindow;
+   class MathOperationsRecordsWidget;
 }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow {
-   Q_OBJECT
+class MathOperationsRecordsWidget : public QFrame{
+    public:
+    explicit MathOperationsRecordsWidget(QWidget * parent=nullptr);
 
-   public:
-   explicit MainWindow(QWidget* parent = nullptr);
-
-   signals:
-   void actionAddNumbertoOperation(int number);
-   void actionAritmeticalOperationSelected(QString operation);
-
-   private slots:
-   void sumNumbers();
-   void addNumbertoOperation(int numbertoAdd);
-   void aritmeticalOperationSelected(QString operation);
-   void clearOperations();
-   void undoOperation();
-
-   private:
-   Ui::MainWindow* ui {nullptr};
-
-   bool operationWasSelected {false};
-   
-   QString firstNumber {"0"};
-   QString secondNumber {"0"};
-   QString mathOperation {};
-
-   MathOperationsRecordsWidget *mathOperationsRecordsWidget{nullptr};
+    private:
+    Ui::MathOperationsRecordsWidget* ui {nullptr};
 };

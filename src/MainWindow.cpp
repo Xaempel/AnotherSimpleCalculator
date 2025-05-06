@@ -2,6 +2,8 @@
 
 #include "frontend/ui_MainWindow.h"
 
+#include "../include/models/DatabaseModel.hpp"
+
 #include <QMessageBox>
 #include <QDebug>
 
@@ -10,6 +12,7 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
    ui->setupUi(this);
+   DatabaseModel::initDb();
 
    QObject::connect(ui->num_1,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(1);});
    QObject::connect(ui->num_2,&QPushButton::clicked,this,[this](){emit actionAddNumbertoOperation(2);});
@@ -34,6 +37,10 @@ MainWindow::MainWindow(QWidget* parent)
    QObject::connect(this,&MainWindow::actionAritmeticalOperationSelected,this,&MainWindow::aritmeticalOperationSelected);
 
    QObject:connect(this,&MainWindow::actionAddNumbertoOperation,this,&MainWindow::addNumbertoOperation);
+   QObject::connect(ui->LastOperationsRecords,&QPushButton::clicked,this,[this](){
+        mathOperationsRecordsWidget = new MathOperationsRecordsWidget(nullptr);
+        this->mathOperationsRecordsWidget->show();
+    });
 }
 
 void MainWindow::sumNumbers(){
@@ -61,6 +68,9 @@ void MainWindow::sumNumbers(){
         }
     }
     ui->operationMonit->setText(QString::number(sumofNumbers) );
+    
+    QString operation = firstNumber + mathOperation + secondNumber + "=" + QString::number(sumofNumbers);  
+    DatabaseModel::addMathematicalOperations(operation);
     
     firstNumber = QString::number(sumofNumbers);
     secondNumber = "0";
