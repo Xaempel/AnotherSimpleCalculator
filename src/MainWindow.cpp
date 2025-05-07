@@ -5,7 +5,7 @@
 #include "../include/models/DatabaseModel.hpp"
 
 #include <QMessageBox>
-#include <QDebug>
+#include <cmath>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -29,7 +29,9 @@ MainWindow::MainWindow(QWidget* parent)
    QObject::connect(ui->minusOperation,&QPushButton::clicked,this,[this](){emit actionAritmeticalOperationSelected("-");});
    QObject::connect(ui->divisionOperation,&QPushButton::clicked,this,[this](){emit actionAritmeticalOperationSelected("/");});
    QObject::connect(ui->multiOperation,&QPushButton::clicked,this,[this](){emit actionAritmeticalOperationSelected("*");});
-   
+   QObject::connect(ui->ExponentiationButton,&QPushButton::clicked,this,[this](){emit actionAritmeticalOperationSelected("^");});
+   QObject::connect(ui->squarerootButton,&QPushButton::clicked,this,[this](){emit actionAritmeticalOperationSelected("sqrt(X)");});
+
    QObject::connect(ui->equalOperation,&QPushButton::clicked,this,&MainWindow::sumNumbers);
    QObject::connect(ui->clearButton,&QPushButton::clicked,this,&MainWindow::clearOperations);
    QObject::connect(ui->undoActionButton,&QPushButton::clicked,this,&MainWindow::undoOperation);
@@ -65,6 +67,18 @@ void MainWindow::sumNumbers(){
         }
         else{
             sumofNumbers = firstNum / secondNum;
+        }
+    }
+    else if(mathOperation == "^"){
+        sumofNumbers = pow(firstNum,secondNum);
+    }
+
+    else if(mathOperation == "sqrt(X)"){
+        if(firstNum >= 0){
+            sumofNumbers = sqrt(firstNum);
+        } 
+        else{
+            QMessageBox::warning(nullptr,"Square Root Error","Bro why you're trying a square root from negative number in real numbers? This is not that the system");
         }
     }
     ui->operationMonit->setText(QString::number(sumofNumbers) );
